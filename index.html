@@ -1,127 +1,140 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Calculator</title>
-    <style>
-      body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-   }
-   
-   h1 {
-    color: #333;
-    text-align: center;
-   }
-   
-   form {
-    margin: 50px auto;
-    width: 300px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-   }
-   
-   input[type="text"], select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-   }
-   
-   input[type="button"], input[type="reset"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #0077cc;
-    color: #fff;
-    cursor: pointer;
-   }
-   
-   input[type="button"]:hover, input[type="reset"]:hover {
-    background-color: #005fa3;
-   }
-   
-   input2 {
-    text-decoration: none;
-    color: #333;
-   }
-   
-   label {
-    color: #555;
-   }
-   
-   #result {
-    margin: 30px auto;
-    width: 250px;
-    text-align: center;
-    font-size: 24px;
-    color: #333;
-   }
-    </style>
-  </head>
-  <body>
+<head>
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #e0f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    h1 {
+      color: #00695c;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    form {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 320px;
+      text-align: center;
+    }
+    
+    input[type="number"], select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #00897b;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    input[type="button"], input[type="reset"] {
+      width: 48%;
+      padding: 12px;
+      margin: 10px 1%;
+      border: none;
+      border-radius: 8px;
+      background-color: #00796b;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    input[type="button"]:hover, input[type="reset"]:hover {
+      background-color: #004d40;
+    }
+    
+    label {
+      color: #004d40;
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+      text-align: left;
+    }
+    
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #004d40;
+      color: #ffffff;
+      font-size: 24px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <form>
     <h1>Calculator</h1>
-    <form>
-      <label for="num1">Number 1:</label>
-      <input type="text" id="num1" name="num1"><br><br>
-      
-      <label for="operation">Operation:</label>
-      <select id="operation" name="operation">
-        <option value="">- Select You Wanted Operation -</option>
-        <option value="+">Addition "+"</option>
-        <option value="-">Subtraction "-"</option>
-        <option value="*">Multiplication "*"</option>
-        <option value="/">Division "/"</option>
-      </select><br><br>
+    <label for="num1">Number 1:</label>
+    <input type="number" id="num1" name="num1">
+    
+    <label for="operation">Operation:</label>
+    <select id="operation" name="operation">
+      <option value="">- Select Operation -</option>
+      <option value="+">Addition (+)</option>
+      <option value="-">Subtraction (-)</option>
+      <option value="*">Multiplication (*)</option>
+      <option value="/">Division (/)</option>
+    </select>
+    
+    <label for="num2">Number 2:</label>
+    <input type="number" id="num2" name="num2">
+    
+    <label for="res">Result:</label>
+    <input type="number" id="res" name="result" readonly>
+    
+    <input type="button" value="Calculate" onclick="calculate()">
+    <input type="reset" value="Reset">
+  </form>
 
-      <label for="num2">Number 2:</label>
-      <input type="text" id="num2" name="num2"><br><br>
+  <script>
+    function calculate() {
+      var num1 = parseFloat(document.getElementById('num1').value);
+      var num2 = parseFloat(document.getElementById('num2').value);
+      var operation = document.getElementById('operation').value;
+      var result = 0;
       
-      <label for="res">Result:</label>
-      <input type="text" id="res" name="result"><br><br>
-
-      <input type="button" value="Calculate" onclick="calculate()">
-      <input type="reset" value="Reset">
-    </form>
-    <p id="result"></p>
-    
-    <script>
-      function calculate() {
-    var num1 = parseFloat(document.getElementById('num1').value);
-    var num2 = parseFloat(document.getElementById('num2').value);
-    var operation = document.getElementById('operation').value;
-    var result = 0;
-    
-    if (isNaN(num1) || isNaN(num2)) {
-    alert('Please enter a valid number!');
-    return;
-    }
-    
-    switch (operation) {
-    case '+':
-      result = num1 + num2;
-      break;
-    case '-':
-      result = num1 - num2;
-      break;
-    case '*':
-      result = num1 * num2;
-      break;
-    case '/':
-      if (num2 === 0) {
-       alert('Cannot divide by zero!');
-       return;
+      if (isNaN(num1) || isNaN(num2)) {
+        alert('Please enter valid numbers!');
+        return;
       }
-      result = num1 / num2;
-      break;
+      
+      switch (operation) {
+        case '+':
+          result = num1 + num2;
+          break;
+        case '-':
+          result = num1 - num2;
+          break;
+        case '*':
+          result = num1 * num2;
+          break;
+        case '/':
+          if (num2 === 0) {
+            alert('Cannot divide by zero!');
+            return;
+          }
+          result = num1 / num2;
+          break;
+        default:
+          alert('Please select an operation!');
+          return;
+      }
+      document.getElementById("res").value = result;
     }
-    document.getElementById("res").value = result;
-   }
-    </script>
- </body>
+  </script>
+</body>
 </html>
