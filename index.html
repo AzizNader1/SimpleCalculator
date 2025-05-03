@@ -1,140 +1,511 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Calculator</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #e0f7fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    
-    h1 {
-      color: #00695c;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    
-    form {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 320px;
-      text-align: center;
-    }
-    
-    input[type="number"], select {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 2px solid #00897b;
-      border-radius: 8px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    
-    input[type="button"], input[type="reset"] {
-      width: 48%;
-      padding: 12px;
-      margin: 10px 1%;
-      border: none;
-      border-radius: 8px;
-      background-color: #00796b;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    
-    input[type="button"]:hover, input[type="reset"]:hover {
-      background-color: #004d40;
-    }
-    
-    label {
-      color: #004d40;
-      font-weight: bold;
-      display: block;
-      margin: 10px 0 5px;
-      text-align: left;
-    }
-    
-    #result {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      background-color: #004d40;
-      color: #ffffff;
-      font-size: 24px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: rgba(45, 52, 54, 0.8);
+            --secondary-color: rgba(99, 110, 114, 0.8);
+            --accent-color: rgba(0, 184, 148, 0.8);
+            --text-color: #ffffff;
+            --button-hover: rgba(0, 168, 132, 0.9);
+            --display-bg: rgba(30, 39, 46, 0.8);
+            --clear-color: rgba(214, 48, 49, 0.8);
+            --memory-color: rgba(9, 132, 227, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --bg-gradient: linear-gradient(135deg, #2d3436, #1e272e);
+            --calculator-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --primary-color: rgba(255, 255, 255, 0.8);
+            --secondary-color: rgba(236, 240, 241, 0.8);
+            --accent-color: rgba(0, 184, 148, 0.8);
+            --text-color: #2d3436;
+            --button-hover: rgba(0, 168, 132, 0.9);
+            --display-bg: rgba(255, 255, 255, 0.8);
+            --clear-color: rgba(214, 48, 49, 0.8);
+            --memory-color: rgba(9, 132, 227, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --bg-gradient: linear-gradient(135deg, #f5f6fa, #dcdde1);
+            --calculator-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--calculator-bg);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-color);
+        }
+
+        .calculator {
+            background: var(--calculator-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            width: 500px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            animation: shine 8s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .calculator:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 12px 40px var(--shadow-color);
+        }
+
+        .display {
+            background: var(--display-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: right;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .display::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: displayShine 2s infinite;
+        }
+
+        @keyframes displayShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .previous-operand {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            min-height: 24px;
+            font-weight: 500;
+            opacity: 0.8;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .current-operand {
+            color: var(--text-color);
+            font-size: 2.8rem;
+            word-wrap: break-word;
+            word-break: break-all;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .current-operand:active {
+            transform: scale(0.98);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        button:hover::before {
+            transform: translateX(100%);
+        }
+
+        button:hover {
+            background: var(--button-hover);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .operator {
+            background: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .equals {
+            background: var(--accent-color);
+            grid-column: span 2;
+            font-weight: 600;
+        }
+
+        .clear, .delete {
+            background: var(--clear-color);
+            font-weight: 600;
+        }
+
+        .memory {
+            background: var(--memory-color);
+            font-weight: 600;
+        }
+
+        @keyframes buttonPress {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        .button-press {
+            animation: buttonPress 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.95);
+                filter: blur(10px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .calculator {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes numberAppear {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .number-appear {
+            animation: numberAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (max-width: 520px) {
+            .calculator {
+                width: 100%;
+                padding: 16px;
+            }
+            
+            button {
+                padding: 16px;
+                font-size: 1.2rem;
+            }
+            
+            .display {
+                padding: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <form>
-    <h1>Calculator</h1>
-    <label for="num1">Number 1:</label>
-    <input type="number" id="num1" name="num1">
-    
-    <label for="operation">Operation:</label>
-    <select id="operation" name="operation">
-      <option value="">- Select Operation -</option>
-      <option value="+">Addition (+)</option>
-      <option value="-">Subtraction (-)</option>
-      <option value="*">Multiplication (*)</option>
-      <option value="/">Division (/)</option>
-    </select>
-    
-    <label for="num2">Number 2:</label>
-    <input type="number" id="num2" name="num2">
-    
-    <label for="res">Result:</label>
-    <input type="number" id="res" name="result" readonly>
-    
-    <input type="button" value="Calculate" onclick="calculate()">
-    <input type="reset" value="Reset">
-  </form>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+        </svg>
+    </div>
 
-  <script>
-    function calculate() {
-      var num1 = parseFloat(document.getElementById('num1').value);
-      var num2 = parseFloat(document.getElementById('num2').value);
-      var operation = document.getElementById('operation').value;
-      var result = 0;
-      
-      if (isNaN(num1) || isNaN(num2)) {
-        alert('Please enter valid numbers!');
-        return;
-      }
-      
-      switch (operation) {
-        case '+':
-          result = num1 + num2;
-          break;
-        case '-':
-          result = num1 - num2;
-          break;
-        case '*':
-          result = num1 * num2;
-          break;
-        case '/':
-          if (num2 === 0) {
-            alert('Cannot divide by zero!');
-            return;
-          }
-          result = num1 / num2;
-          break;
-        default:
-          alert('Please select an operation!');
-          return;
-      }
-      document.getElementById("res").value = result;
-    }
-  </script>
+    <div class="calculator">
+        <div class="display">
+            <div class="previous-operand"></div>
+            <div class="current-operand">0</div>
+        </div>
+        <div class="buttons">
+            <button class="memory" onclick="memoryClear()">MC</button>
+            <button class="memory" onclick="memoryRecall()">MR</button>
+            <button class="memory" onclick="memoryAdd()">M+</button>
+            <button class="memory" onclick="memorySubtract()">M-</button>
+            <button class="clear" onclick="clearAll()">AC</button>
+            <button class="delete" onclick="deleteLast()">DEL</button>
+            <button class="operator" onclick="appendOperator('%')">%</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="operator" onclick="sqrt()">√</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperand = '0';
+        let previousOperand = '';
+        let operation = undefined;
+        let memory = 0;
+        let isDarkTheme = true;
+
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+            const themeToggle = document.querySelector('.theme-toggle svg');
+            themeToggle.style.transform = isDarkTheme ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function updateDisplay() {
+            const currentOperandElement = document.querySelector('.current-operand');
+            const previousOperandElement = document.querySelector('.previous-operand');
+            
+            currentOperandElement.textContent = currentOperand;
+            previousOperandElement.textContent = previousOperand;
+            
+            currentOperandElement.classList.add('number-appear');
+            setTimeout(() => {
+                currentOperandElement.classList.remove('number-appear');
+            }, 300);
+        }
+
+        function animateButton(button) {
+            button.classList.add('button-press');
+            setTimeout(() => {
+                button.classList.remove('button-press');
+            }, 200);
+        }
+
+        function appendNumber(number) {
+            const button = event.target;
+            animateButton(button);
+            
+            if (number === '.' && currentOperand.includes('.')) return;
+            if (currentOperand === '0' && number !== '.') {
+                currentOperand = number;
+            } else {
+                currentOperand += number;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(operator) {
+            const button = event.target;
+            animateButton(button);
+            
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                calculate();
+            }
+            operation = operator;
+            previousOperand = currentOperand + ' ' + operator;
+            currentOperand = '';
+            updateDisplay();
+        }
+
+        function calculate() {
+            const button = event.target;
+            animateButton(button);
+            
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    if (current === 0) {
+                        alert("Cannot divide by zero!");
+                        return;
+                    }
+                    computation = prev / current;
+                    break;
+                case '%':
+                    computation = prev % current;
+                    break;
+                default:
+                    return;
+            }
+
+            currentOperand = computation.toString();
+            operation = undefined;
+            previousOperand = '';
+            updateDisplay();
+        }
+
+        function clearAll() {
+            const button = event.target;
+            animateButton(button);
+            
+            currentOperand = '0';
+            previousOperand = '';
+            operation = undefined;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            const button = event.target;
+            animateButton(button);
+            
+            if (currentOperand.length === 1) {
+                currentOperand = '0';
+            } else {
+                currentOperand = currentOperand.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function sqrt() {
+            const button = event.target;
+            animateButton(button);
+            
+            const number = parseFloat(currentOperand);
+            if (number < 0) {
+                alert("Cannot calculate square root of negative number!");
+                return;
+            }
+            currentOperand = Math.sqrt(number).toString();
+            updateDisplay();
+        }
+
+        function memoryAdd() {
+            const button = event.target;
+            animateButton(button);
+            memory += parseFloat(currentOperand);
+        }
+
+        function memorySubtract() {
+            const button = event.target;
+            animateButton(button);
+            memory -= parseFloat(currentOperand);
+        }
+
+        function memoryRecall() {
+            const button = event.target;
+            animateButton(button);
+            currentOperand = memory.toString();
+            updateDisplay();
+        }
+
+        function memoryClear() {
+            const button = event.target;
+            animateButton(button);
+            memory = 0;
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (event) => {
+            const button = document.querySelector(`button[onclick*="${event.key}"]`);
+            if (button) animateButton(button);
+            
+            if (event.key >= '0' && event.key <= '9') appendNumber(event.key);
+            if (event.key === '.') appendNumber('.');
+            if (event.key === '+' || event.key === '-' || event.key === '*' || event.key === '/') 
+                appendOperator(event.key);
+            if (event.key === 'Enter' || event.key === '=') calculate();
+            if (event.key === 'Escape') clearAll();
+            if (event.key === 'Backspace') deleteLast();
+        });
+
+        updateDisplay();
+    </script>
 </body>
 </html>
